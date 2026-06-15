@@ -1,0 +1,184 @@
+:root {
+    --primary: #102A43;
+    --accent: #627D98;
+    --background: #F0F4F8;
+    --surface: #FFFFFF;
+    --success: #28A745;
+    --danger: #DC3545;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+#app {
+    background: var(--surface);
+    width: 100%;
+    max-width: 450px;
+    min-height: 80vh;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(16, 42, 67, 0.1);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.subtitulo {
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 14px 18px;
+    background: #F0F4F8;
+    border: 2px solid #E4EBF1;
+    border-radius: 14px;
+    font-size: 15px;
+    color: var(--primary);
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: var(--accent);
+}
+
+/* Botão de Avançar / Menu */
+button {
+    width: 100%;
+    padding: 15px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(16, 42, 67, 0.2);
+    transition: all 0.1s ease;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* BOTÕES DAS OPÇÕES (AQUI ESTAVA O ERRO) */
+.opcao {
+    background: #F8F9FA !important;
+    border: 2px solid #E4EBF1 !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+    margin-bottom: 12px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #102A43 !important; /* Força o texto a ser azul escuro */
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    text-align: left !important;
+    box-shadow: none !important;
+}
+
+.opcao:not(.btn-disabled):active {
+    background: #E4EBF1 !important;
+    border-color: var(--accent) !important;
+}
+
+.btn-disabled {
+    opacity: 0.5;
+    background: #E4EBF1 !important;
+    border-color: #BCCCDC !important;
+    color: #627D98 !important;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none !important;
+}
+
+.timer-container {
+    width: 100%;
+    height: 6px;
+    background: #E4EBF1;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.timer-bar {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #FFC107, #DC3545);
+    transition: width 1s linear;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.btn-voltar-topo {
+    background: transparent !important;
+    color: var(--accent) !important;
+    box-shadow: none !important;
+    font-size: 13px !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.pergunta {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.resultado {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.resultado h2 {
+    font-size: 28px;
+}
