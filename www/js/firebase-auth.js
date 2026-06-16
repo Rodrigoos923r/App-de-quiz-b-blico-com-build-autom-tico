@@ -22,6 +22,7 @@ const mensagemErro = document.getElementById('mensagemErro');
 
 // Ação para o botão de LOGIN
 btnLogin.addEventListener('click', () => {
+    mensagemErro.innerText = "";
     const email = emailInput.value;
     const password = passwordInput.value;
 
@@ -37,6 +38,7 @@ btnLogin.addEventListener('click', () => {
 
 // Ação para o botão de CADASTRO
 btnCadastrar.addEventListener('click', () => {
+    mensagemErro.innerText = "";
     const email = emailInput.value;
     const password = passwordInput.value;
 
