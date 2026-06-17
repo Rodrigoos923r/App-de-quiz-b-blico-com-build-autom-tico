@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZPQu9a5rqGBLRLIyJsyh9SVrEqE3FCZc",
+            authDomain: "quiz-biblico-8bcdb.firebaseapp.com",
+            projectId: "quiz-biblico-8bcdb",
+            storageBucket: "quiz-biblico-8bcdb.firebasestorage.app",
+            messagingSenderId: "989946576987",
+            appId: "1:989946576987:web:fdf5dd684cca1c3dc0bf7e"
+        };
+
+        // Evita erro de Firebase já inicializado
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const db = firebase.firestore();
+
+        // Função segura para obter nome do jogador
+        function obterNome(user) {
+            if (!user) return "Jogador";
+
+            if (
+                typeof user.nome === "string" &&
+                user.nome.trim() !== ""
+            ) {
+                return user.nome.trim();
+            }
+
+            if (
+                typeof user.email === "string" &&
+                user.email.includes("@")
+            ) {
+                return user.email.split("@")[0];
+            }
+
+            return "Jogador Anônimo";
+        }
+
+        // Carrega ranking
+        db.collection("usuarios")
+            .orderBy("pontos", "desc")
+            .limit(10)
+            .get()
+            .then((querySnapshot) => {
+
+                const lista = document.getElementById("listaRanking");
+                lista.innerHTML = "";
+
+                let arrUsers = [];
+
+                querySnapshot.forEach((doc) => {
+                    arrUsers.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                // Nenhum jogador encontrado
+                if (arrUsers.length === 0) {
+
+                    document.getElementById("top1-name").innerText = "Sem jogadores";
+                    document.getElementById("top1-xp").innerText = "0 XP";
+
+                    document.getElementById("top2-name").innerText = "-";
+                    document.getElementById("top2-xp").innerText = "0 XP";
+
+                    document.getElementById("top3-name").innerText = "-";
+                    document.getElementById("top3-xp").innerText = "0 XP";
+
+                    lista.style.display = "none";
+                    return;
+                }
+
+                // Top 1
+                if (arrUsers[0]) {
+                    document.getElementById("top1-name").innerText =
+                        obterNome(arrUsers[0]);
+
+                    document.getElementById("top1-xp").innerText =
+                        (arrUsers[0].pontos || 0) + " XP";
+                }
+
+                // Top 2
+                if (arrUsers[1]) {
+                    document.getElementById("top2-name").innerText =
+                        obterNome(arrUsers[1]);
+
+                    document.getElementById("top2-xp").innerText =
+                        (arrUsers[1].pontos || 0) + " XP";
+                } else {
+                    document.getElementById("top2-name").innerText = "-";
+                    document.getElementById("top2-xp").innerText = "0 XP";
+                }
+
+                // Top 3
+                if (arrUsers[2]) {
+                    document.getElementById("top3-name").innerText =
+                        obterNome(arrUsers[2]);
+
+                    document.getElementById("top3-xp").innerText =
+                        (arrUsers[2].pontos || 0) + " XP";
+                } else {
+                    document.getElementById("top3-name").innerText = "-";
+                    document.getElementById("top3-xp").innerText = "0 XP";
+                }
+
+                // Esconde lista inferior se houver até 3 jogadores
+                if (arrUsers.length <= 3) {
+                    lista.style.display = "none";
+                    return;
+                }
+
+                lista.style.display = "block";
+
+                // 4º ao 10º lugar
+                for (let i = 3; i < arrUsers.length; i++) {
+
+                    const user = arrUsers[i];
+
+                    lista.innerHTML += `
+                        <div class="ranking-item">
+                            <div class="position">${i + 1}º</div>
+                            <div class="item-avatar"></div>
+                            <div class="item-name">${obterNome(user)}</div>
+                            <div class="item-xp">${user.pontos || 0} XP</div>
+                        </div>
+                    `;
+                }
+            })
+            .catch((err) => {
+
+                console.error("Erro ao carregar ranking:", err);
+
+                alert(
+                    "Erro ao carregar ranking.\n\n" +
+                    (err.code || "erro-desconhecido") +
+                    "\n\n" +
+                    err.message
+                );
+            });
+    </script>
+</body></html>
