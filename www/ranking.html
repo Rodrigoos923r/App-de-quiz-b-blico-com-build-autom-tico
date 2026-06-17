@@ -193,6 +193,14 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        
+        // Garante um registro inicial de teste se o banco estiver vazio
+        db.collection("usuarios").limit(1).get().then(snap => {
+            if(snap.empty) {
+                db.collection("usuarios").add({ nome: "Rodrigo (Você)", pontos: 10, email: "teste@teste.com" })
+                .then(() => location.reload());
+            }
+        });
 
         // Buscar dados do Firestore ordenados por maior pontuação
         db.collection("usuarios").orderBy("pontos", "desc").limit(10).get()
