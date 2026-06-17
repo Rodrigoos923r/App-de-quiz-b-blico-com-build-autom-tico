@@ -47,14 +47,14 @@ btnCadastrar.addEventListener('click', () => {
 
     auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
+            alert("Conta criada com sucesso! Entrando...");
+            window.location.href = "index.html";
+            // Salva o nome inicial no banco de dados
             firebase.firestore().collection("usuarios").doc(userCredential.user.uid).set({
                 nome: nome,
                 email: email,
                 pontos: 0
-            }, { merge: true }).then(() => {
-                alert("Conta criada com sucesso! Entrando...");
-                window.location.href = "index.html";
-            });
+            }, { merge: true });
         })
         .catch((error) => {
             mensagemErro.innerText = "Erro ao cadastrar: " + error.message;
