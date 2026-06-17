@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script>window.onerror = function(m, u, l) { alert("Erro no Jogo:\n" + m + "\nLinha: " + l + "\nArquivo: " + u); };</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jornada da Sabedoria</title>
@@ -17,6 +18,22 @@
     <audio id="som-erro" src="sons/erro.mp3" preload="auto"></audio>
 
     <!-- Script Principal -->
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Inicializa o Firebase no index também para o app.js não quebrar
+        const firebaseConfig = {
+          apiKey: "AIzaSyBZPQu9a5rqGBLRLIyJsyh9SVrEqE3FCZc",
+          authDomain: "quiz-biblico-8bcdb.firebaseapp.com",
+          projectId: "quiz-biblico-8bcdb",
+          storageBucket: "quiz-biblico-8bcdb.firebasestorage.app",
+          messagingSenderId: "989946576987",
+          appId: "1:989946576987:web:fdf5dd684cca1c3dc0bf7e"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
     <script src="js/perguntas.js"></script>
     <script src="js/app.js"></script>
 </body>
