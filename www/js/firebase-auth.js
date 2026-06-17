@@ -14,6 +14,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // Selecionando os campos da tela
+const nomeInput = document.getElementById("nome");
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const btnLogin = document.getElementById('btnLogin');
@@ -38,6 +39,8 @@ btnLogin.addEventListener('click', () => {
 
 // Ação para o botão de CADASTRO
 btnCadastrar.addEventListener('click', () => {
+    const nome = nomeInput.value.trim();
+    if(!nome){ mensagemErro.innerText = "Digite seu nome para o ranking!"; return; }
     mensagemErro.innerText = "";
     const email = emailInput.value;
     const password = passwordInput.value;
@@ -46,6 +49,12 @@ btnCadastrar.addEventListener('click', () => {
         .then((userCredential) => {
             alert("Conta criada com sucesso! Entrando...");
             window.location.href = "index.html";
+            // Salva o nome inicial no banco de dados
+            firebase.firestore().collection("usuarios").doc(userCredential.user.uid).set({
+                nome: nome,
+                email: email,
+                pontos: 0
+            }, { merge: true });
         })
         .catch((error) => {
             mensagemErro.innerText = "Erro ao cadastrar: " + error.message;

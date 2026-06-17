@@ -1,3 +1,4 @@
+firebase.auth().onAuthStateChanged((user) => { if (!user) { window.location.href = "login.html"; } });
 window.onerror = function(m, u, l) { alert("Erro: " + m + "\nLinha: " + l); };
 let progresso = JSON.parse(localStorage.getItem('jornada_progresso')) || {
     fasesDesbloqueadas: ['eden'],
@@ -30,8 +31,20 @@ function gerarCoracoes() {
     return "❤️".repeat(vidas) + "🤍".repeat(3 - vidas);
 }
 
+function salvarNaNuvem() {
+    const usuario = firebase.auth().currentUser;
+    if (usuario) {
+        firebase.firestore().collection("usuarios").doc(usuario.uid).set({
+            email: usuario.email,
+            pontos: progresso.pontuacao,
+            respostasCorretas: progresso.respostasCorretas,
+            respostasErradas: progresso.respostasErradas
+        }, { merge: true }).catch(err => console.log("Erro Firestore:", err));
+    }
+}
+
 function salvarProgresso() {
-    localStorage.setItem('jornada_progresso', JSON.stringify(progresso));
+    localStorage.setItem("jornada_progresso", JSON.stringify(progresso)); salvarNaNuvem();
 }
 
 function iniciarJogo() {
@@ -61,7 +74,7 @@ function renderizarMenu() {
     });
 
     html += `
-                <button onclick="abrirPerfil()" style="background:#007bff; margin-top:20px;">👤 Ver Perfil</button>
+                <button onclick="window.location.href='ranking.html'" style="background:#007bff; margin-top:20px;">👤 Ver Perfil</button>
             </div>
         </div>
     `;

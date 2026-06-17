@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Quiz Bíblico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0b111e;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #4ce1b6;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* Área do Pódio (Top 3) - Baseado na imagem 432593.png */
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        .podium-card {
+            background: linear-gradient(135deg, #201a30, #2f2546);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid #3d3056;
+        }
+
+        /* Destaque para o 1º Lugar */
+        .podium-card.first {
+            background: linear-gradient(135deg, #ffca28, #ff8f00);
+            transform: scale(1.08);
+            border: 1px solid #ffe082;
+            color: #000;
+        }
+        .podium-card.first .xp { color: #222; }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #fff;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .name {
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .xp {
+            font-size: 11px;
+            color: #00e676;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        /* Lista de Ranking Inferior */
+        .ranking-list {
+            width: 100%;
+            max-width: 400px;
+            background: #131a26;
+            border: 2px solid #1f2d40;
+            border-radius: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            border-bottom: 1px solid #1f2d40;
+        }
+        .ranking-item:last-child { border-bottom: none; }
+
+        .position {
+            font-weight: bold;
+            width: 30px;
+            color: #8a99ad;
+        }
+
+        .item-avatar {
+            width: 35px;
+            height: 35px;
+            background: #2a3b50;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .item-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .item-xp {
+            color: #4ce1b6;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Botão Voltar */
+        .btn-home {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #2f2546;
+            border: 1px solid #4ce1b6;
+            color: #4ce1b6;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Leaderboard</h2>
+
+    <!-- PÓDIO (TOP 3) -->
+    <div class="podium-container">
+        <!-- 2º Lugar -->
+        <div class="podium-card">
+            <div class="avatar">🥈</div>
+            <div class="name" id="top2-name">Carregando...</div>
+            <div class="xp" id="top2-xp">0 XP</div>
+        </div>
+        
+        <!-- 1º Lugar -->
+        <div class="podium-card first">
+            <div class="avatar">🥇</div>
+            <div class="name" id="top1-name">Carregando...</div>
+            <div class="xp" id="top1-xp">0 XP</div>
+        </div>
+
+        <!-- 3º Lugar -->
+        <div class="podium-card">
+            <div class="avatar">🥉</div>
+            <div class="name" id="top3-name">Carregando...</div>
+            <div class="xp" id="top3-xp">0 XP</div>
+        </div>
+    </div>
+
+    <!-- LISTA COMPLETA -->
+    <div class="ranking-list" id="listaRanking">
+        <!-- Itens inseridos via JavaScript do Firebase virão aqui -->
+    </div>
+
+    <button class="btn-home" onclick="window.location.href='index.html'">HOME</button>
+
+    <!-- Firebase SDKs Obrigatórios -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Configuração do Firebase (A mesma que usamos no login)
+        const firebaseConfig = {
+          apiKey: "AIzaSyBZPQu9a5rqGBLRLIyJsyh9SVrEqE3FCZc",
+          authDomain: "quiz-biblico-8bcdb.firebaseapp.com",
+          projectId: "quiz-biblico-8bcdb",
+          storageBucket: "quiz-biblico-8bcdb.firebasestorage.app",
+          messagingSenderId: "989946576987",
+          appId: "1:989946576987:web:fdf5dd684cca1c3dc0bf7e"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Buscar dados do Firestore ordenados por maior pontuação
+        db.collection("usuarios").orderBy("pontos", "desc").limit(10).get()
+        .then((querySnapshot) => {
+            const lista = document.getElementById('listaRanking');
+            lista.innerHTML = ""; // Limpa estrutura
+            
+            let arrUsers = [];
+            querySnapshot.forEach((doc) => {
+                arrUsers.push(doc.data());
+            });
+
+            // Preenche o Pódio se houver jogadores suficientes
+            if(arrUsers[0]) {
+                document.getElementById('top1-name').innerText = arrUsers[0].nome || arrUsers[0].email.split('@')[0];
+                document.getElementById('top1-xp').innerText = (arrUsers[0].pontos || 0) + " XP";
+            }
+            if(arrUsers[1]) {
+                document.getElementById('top2-name').innerText = arrUsers[1].nome || arrUsers[1].email.split('@')[0];
+                document.getElementById('top2-xp').innerText = (arrUsers[1].pontos || 0) + " XP";
+            }
+            if(arrUsers[2]) {
+                document.getElementById('top3-name').innerText = arrUsers[2].nome || arrUsers[2].email.split('@')[0];
+                document.getElementById('top3-xp').innerText = (arrUsers[2].pontos || 0) + " XP";
+            }
+
+            // Preenche o resto da lista (a partir do 4º lugar)
+            for(let i = 3; i < arrUsers.length; i++) {
+                let user = arrUsers[i];
+                let nomeExibicao = user.nome || user.email.split('@')[0];
+                let pontosExibicao = user.pontos || 0;
+
+                lista.innerHTML += `
+                    <div class="ranking-item">
+                        <div class="position">${i + 1}º</div>
+                        <div class="item-avatar"></div>
+                        <div class="item-name">${nomeExibicao}</div>
+                        <div class="item-xp">${pontosExibicao} XP</div>
+                    </div>
+                `;
+            }
+        }).catch(err => console.log("Erro ao carregar ranking:", err));
+    </script>
+</body>
+</html>
+
