@@ -60,10 +60,10 @@
     <h2>Quiz Bíblico</h2>
     <input type="text" id="nome" placeholder="Seu Nome (Para o Ranking)">
     <input type="email" id="email" placeholder="Seu E-mail">
-    <input type="password" id="senha" placeholder="Sua Senha">
+    <input type="password" id="password" placeholder="Sua Senha">
     
-    <button id="btnEntrar">Entrar</button>
-    <button id="btnAlternar" class="register-btn">Criar Nova Conta</button>
+    <button id="btnLogin">Entrar</button>
+    <button id="btnCadastrar" class="register-btn">Criar Nova Conta</button>
     
     <div id="mensagemErro" class="msg"></div>
 </div>
